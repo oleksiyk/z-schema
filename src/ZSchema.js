@@ -734,6 +734,8 @@
         var self = this;
         var report = new Report();
 
+        report._json = json;
+
         // schema compilation is async as some remote requests may occur
         return this._compileSchema(report, schema)
             .then(function (compiledSchema) {
@@ -1000,6 +1002,15 @@
         }
 
         return Promise.all(Utils.map(schema, function (val, key) {
+                if(typeof schema.normalize === 'function'){
+                    report.getPath().split('/').slice(1).reduce(function (acc, key, ind, arr) {
+                        if(ind === arr.length - 1){
+                            instance = acc[key] = schema.normalize(instance);
+                        } else {
+                            return acc[key];
+                        }
+                    }, report._json);
+                }
                 if (InstanceValidators[key] !== undefined) {
                     return InstanceValidators[key].call(self, report, schema, instance);
                 }
