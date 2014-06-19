@@ -1004,6 +1004,7 @@
         return Promise.all(Utils.map(schema, function (val, key) {
                 if(typeof schema.normalize === 'function'){
                     report.getPath().split('/').slice(1).reduce(function (acc, key, ind, arr) {
+                        key = key.replace(/^\[(\d+)\]$/, '$1');
                         if(ind === arr.length - 1){
                             instance = acc[key] = schema.normalize(instance);
                         } else {
